@@ -28,3 +28,9 @@ class ScheduleRequest(RunRequest):
     recipient: str = Field(min_length=1, max_length=100)
     first_at: datetime
     repeat_daily: bool = False
+
+class PublishRequest(Request):
+    dataset_id: int = Field(gt=0)
+    granularity: str = Field(min_length=1, max_length=10)
+    start: str = Field(default='', max_length=10)
+    end: str = Field(default='', max_length=10)

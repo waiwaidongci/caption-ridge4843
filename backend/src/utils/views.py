@@ -27,3 +27,23 @@ def schedule(item):
 def delivery(item):
     return {'id': item.id, 'run_id': item.run_id, 'recipient': item.recipient,
             'state': item.state, 'detail': item.detail, 'created_at': iso(item.created_at)}
+
+
+def publication(item, detail=False):
+    item_view = {'id': item.id, 'dataset_id': item.dataset_id, 'granularity': item.granularity,
+                 'start': item.start, 'end': item.end, 'order_count': item.order_count,
+                 'hidden_count': item.hidden_count, 'author': item.author,
+                 'created_at': iso(item.created_at), 'has_export': bool(item.export_file)}
+    if detail:
+        item_view['table'] = display_table(item.snapshot)
+    return item_view
+
+
+def display_table(table):
+    """对外展示的表：去掉仅服务端用于联合校验的日期覆盖信息。"""
+    def row_view(row):
+        return {'label': row['label'], 'count': row['count'], 'minutes': row['minutes'],
+                'reason': row.get('reason')}
+    return {'granularity': table['granularity'], 'start': table['start'], 'end': table['end'],
+            'rows': [row_view(row) for row in table['rows']], 'total': row_view(table['total']),
+            'order_count': table['order_count'], 'hidden': table['hidden']}
